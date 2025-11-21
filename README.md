@@ -11,6 +11,16 @@ Save Editor for Animal Crossing: New Horizons
 Edits savedata dumped from the Nintendo Switch. 
 * Bring your own save file data; this program does not dump it from your console.
 
+## What's in this fork
+
+* Added a “Max Currency” button on the Players tab to instantly set Wallet, Bank Bells, Nook Miles, Earned Miles, and Poki (when available) to their maximum values.
+* Added support for 0000000000000001 folder you don't have to make the same changes to both main.dat files inside of both 0 and 1 folder, just load in 0000000000000001 folder and make changes
+
+## Build and run (Windows)
+
+1. Build: `dotnet build NHSE.sln -c Debug`
+2. Run: `NHSE.WinForms/bin/Debug/net461/NHSE.WinForms.exe`
+
 ## See Also
 
 [MyHorizons](https://github.com/Cuyler36/MyHorizons) by [Cuyler36](https://github.com/Cuyler36/)
