@@ -28,25 +28,57 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.B_Open = new System.Windows.Forms.Button();
+            this.B_OpenRecent = new System.Windows.Forms.Button();
+            this.toolTipRecent = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.B_Open, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.B_OpenRecent, 0, 1);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(306, 150);
+            this.tableLayoutPanel1.TabIndex = 1;
             // 
             // B_Open
             // 
             this.B_Open.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.B_Open.Location = new System.Drawing.Point(0, 0);
+            this.B_Open.Location = new System.Drawing.Point(3, 3);
             this.B_Open.Name = "B_Open";
-            this.B_Open.Size = new System.Drawing.Size(306, 121);
+            this.B_Open.Size = new System.Drawing.Size(300, 99);
             this.B_Open.TabIndex = 0;
             this.B_Open.Text = "Open main.dat\r\n\r\nOr...\r\n\r\nDrag&&Drop folder here!";
             this.B_Open.UseVisualStyleBackColor = true;
             this.B_Open.Click += new System.EventHandler(this.Menu_Open);
             // 
+            // B_OpenRecent
+            // 
+            this.B_OpenRecent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.B_OpenRecent.Location = new System.Drawing.Point(3, 108);
+            this.B_OpenRecent.Name = "B_OpenRecent";
+            this.B_OpenRecent.Size = new System.Drawing.Size(300, 39);
+            this.B_OpenRecent.TabIndex = 1;
+            this.B_OpenRecent.Text = "Open most recent folder";
+            this.B_OpenRecent.UseVisualStyleBackColor = true;
+            this.B_OpenRecent.Visible = false;
+            this.B_OpenRecent.Click += new System.EventHandler(this.Menu_OpenRecent);
+            this.toolTipRecent.SetToolTip(this.B_OpenRecent, "");
+            // 
             // Main
             // 
             this.AllowDrop = true;
-            this.ClientSize = new System.Drawing.Size(306, 121);
-            this.Controls.Add(this.B_Open);
+            this.ClientSize = new System.Drawing.Size(306, 150);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = global::NHSE.WinForms.Properties.Resources.icon;
             this.KeyPreview = true;
@@ -64,7 +96,9 @@
 
         #endregion
 
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button B_Open;
+        private System.Windows.Forms.Button B_OpenRecent;
+        private System.Windows.Forms.ToolTip toolTipRecent;
     }
 }
-

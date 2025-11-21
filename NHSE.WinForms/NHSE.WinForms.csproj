@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net46;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net461;net8.0-windows</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
     <Description>Animal Crossing - New Horizons Save Editor</Description>
     <StartupObject>NHSE.WinForms.Program</StartupObject>
@@ -15,6 +15,14 @@
     <ProjectReference Include="..\NHSE.Injection\NHSE.Injection.csproj" />
     <ProjectReference Include="..\NHSE.Sprites\NHSE.Sprites.csproj" />
     <ProjectReference Include="..\NHSE.Villagers\NHSE.Villagers.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+    <PackageReference Include="System.Resources.Extensions" Version="4.7.1" />
   </ItemGroup>
 
   <ItemGroup>

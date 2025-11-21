@@ -1,9 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net46;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net461;net8.0-windows</TargetFrameworks>
     <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+    <PackageReference Include="System.Resources.Extensions" Version="4.7.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Resources\MenuIcon\" />

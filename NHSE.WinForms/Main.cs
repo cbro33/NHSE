@@ -22,6 +22,7 @@ namespace NHSE.WinForms
         public Main()
         {
             InitializeComponent();
+            UpdateRecentButton();
 
             // Flash to front
             BringToFront();
@@ -32,6 +33,8 @@ namespace NHSE.WinForms
             var args = Environment.GetCommandLineArgs();
             for (int i = 1; i < args.Length; i++)
                 Open(args[i]);
+
+            UpdateRecentButton();
         }
 
         private static void Open(HorizonSave file)
@@ -62,6 +65,7 @@ namespace NHSE.WinForms
                 return;
             Open(files[0]);
             e.Effect = DragDropEffects.Copy;
+            UpdateRecentButton();
         }
 
         private void Menu_Open(object sender, EventArgs e)
@@ -76,6 +80,7 @@ namespace NHSE.WinForms
                 if (Directory.Exists(path))
                 {
                     Open(path);
+                    UpdateRecentButton();
                     return;
                 }
             }
@@ -87,7 +92,31 @@ namespace NHSE.WinForms
                 FileName = "main.dat",
             };
             if (ofd.ShowDialog() == DialogResult.OK)
+            {
                 Open(ofd.FileName);
+                UpdateRecentButton();
+            }
+        }
+
+        private void Menu_OpenRecent(object? sender, EventArgs e)
+        {
+            var path = Settings.Default.LastFilePath;
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                WinFormsUtil.Error("No recent save folder recorded yet.");
+                UpdateRecentButton();
+                return;
+            }
+
+            if (!Directory.Exists(path))
+            {
+                WinFormsUtil.Error("The most recent save folder could not be found.", path);
+                UpdateRecentButton();
+                return;
+            }
+
+            Open(path);
+            UpdateRecentButton();
         }
 
         private static void Open(string path)
@@ -122,6 +151,26 @@ namespace NHSE.WinForms
             }
 
             OpenSaveFile(dir);
+        }
+
+        private void UpdateRecentButton()
+        {
+            var path = Settings.Default.LastFilePath;
+            if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
+            {
+                B_OpenRecent.Visible = false;
+                toolTipRecent.SetToolTip(B_OpenRecent, string.Empty);
+                return;
+            }
+
+            var trimmed = path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var name = Path.GetFileName(trimmed);
+            if (string.IsNullOrEmpty(name))
+                name = trimmed;
+
+            B_OpenRecent.Text = $"Open most recent folder ({name})";
+            toolTipRecent.SetToolTip(B_OpenRecent, path);
+            B_OpenRecent.Visible = true;
         }
 
         private static void OpenSaveFile(string path)
