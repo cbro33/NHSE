@@ -62,6 +62,7 @@ Editor.B_EditPlayerMisc=Editar Misc.
 Editor.B_EditPlayerReactions=Editar Reacciones
 Editor.B_EditPlayerReceivedItems=Editar Objetos Recibidos
 Editor.B_EditPlayerRecipes=Editar Recetas
+Editor.B_MaxCurrency=Max Currency
 Editor.B_EditPlayerStorage=Editar Almacen
 Editor.B_EditPRODesigns=Editar Diseños PRO
 Editor.B_EditTurnipExchange=Editar Intercambio de Nabos

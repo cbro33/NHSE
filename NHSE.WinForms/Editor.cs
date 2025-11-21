@@ -283,6 +283,24 @@ namespace NHSE.WinForms
             editor.ShowDialog();
         }
 
+        private void B_MaxCurrency_Click(object sender, EventArgs e)
+        {
+            const uint walletMax = 99_999;
+            const uint bankMax = 999_999_999;
+            const uint nookMilesMax = 9_999_999;
+            const uint earnedMilesMax = 999_999_999;
+            const uint pokiMax = 999_999_999;
+
+            NUD_Wallet.Value = Math.Min(NUD_Wallet.Maximum, walletMax);
+            NUD_BankBells.Value = Math.Min(NUD_BankBells.Maximum, bankMax);
+            NUD_NookMiles.Value = Math.Min(NUD_NookMiles.Maximum, nookMilesMax);
+            NUD_TotalNookMiles.Value = Math.Min(NUD_TotalNookMiles.Maximum, earnedMilesMax);
+
+            var hasPoki = PlayerIndex >= 0 && SAV.Players.Length > PlayerIndex && SAV.Players[PlayerIndex].WhereAreN != null;
+            if (hasPoki)
+                NUD_Poki.Value = Math.Min(NUD_Poki.Maximum, pokiMax);
+        }
+
         private void LoadPlayer(int index)
         {
             if (PlayerIndex >= 0)
@@ -308,12 +326,15 @@ namespace NHSE.WinForms
 
             if (player.WhereAreN is not null)
             {
+                L_Poki.Visible = NUD_Poki.Visible = true;
                 NUD_Poki.Value = Math.Min(int.MaxValue, player.WhereAreN.Poki.Value);
             }
             else
             {
                 L_Poki.Visible = NUD_Poki.Visible = false;
             }
+
+            PositionMaxCurrencyButton(player.WhereAreN is not null);
 
             try
             {
@@ -379,6 +400,13 @@ namespace NHSE.WinForms
                 poki.Value = (uint)NUD_Poki.Value;
                 x.Poki = poki;
             }
+        }
+
+        private void PositionMaxCurrencyButton(bool hasPoki)
+        {
+            int yBase = hasPoki ? NUD_Poki.Bottom : NUD_PocketCount2.Bottom;
+            int y = yBase + 8;
+            B_MaxCurrency.Location = new Point(B_MaxCurrency.Location.X, y);
         }
 
         private void B_EditAchievements_Click(object sender, EventArgs e)

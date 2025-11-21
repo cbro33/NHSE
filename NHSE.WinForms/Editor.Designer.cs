@@ -68,6 +68,7 @@
             this.B_RecycleBin = new System.Windows.Forms.Button();
             this.Tab_Villagers = new System.Windows.Forms.TabPage();
             this.Tab_Players = new System.Windows.Forms.TabPage();
+            this.B_MaxCurrency = new System.Windows.Forms.Button();
             this.L_Poki = new System.Windows.Forms.Label();
             this.NUD_Poki = new System.Windows.Forms.NumericUpDown();
             this.L_EarnedMiles = new System.Windows.Forms.Label();
@@ -271,7 +272,7 @@
             this.Tab_Map.Location = new System.Drawing.Point(4, 22);
             this.Tab_Map.Name = "Tab_Map";
             this.Tab_Map.Padding = new System.Windows.Forms.Padding(3);
-            this.Tab_Map.Size = new System.Drawing.Size(396, 261);
+            this.Tab_Map.Size = new System.Drawing.Size(396, 295);
             this.Tab_Map.TabIndex = 2;
             this.Tab_Map.Text = "Map";
             this.Tab_Map.UseVisualStyleBackColor = true;
@@ -481,7 +482,7 @@
             this.Tab_Villagers.Location = new System.Drawing.Point(4, 22);
             this.Tab_Villagers.Name = "Tab_Villagers";
             this.Tab_Villagers.Padding = new System.Windows.Forms.Padding(3);
-            this.Tab_Villagers.Size = new System.Drawing.Size(396, 261);
+            this.Tab_Villagers.Size = new System.Drawing.Size(396, 295);
             this.Tab_Villagers.TabIndex = 0;
             this.Tab_Villagers.Text = "Villagers";
             this.Tab_Villagers.UseVisualStyleBackColor = true;
@@ -489,6 +490,7 @@
             // Tab_Players
             // 
             this.Tab_Players.Controls.Add(this.L_Poki);
+            this.Tab_Players.Controls.Add(this.B_MaxCurrency);
             this.Tab_Players.Controls.Add(this.NUD_Poki);
             this.Tab_Players.Controls.Add(this.L_EarnedMiles);
             this.Tab_Players.Controls.Add(this.NUD_TotalNookMiles);
@@ -515,10 +517,20 @@
             this.Tab_Players.Location = new System.Drawing.Point(4, 22);
             this.Tab_Players.Name = "Tab_Players";
             this.Tab_Players.Padding = new System.Windows.Forms.Padding(3);
-            this.Tab_Players.Size = new System.Drawing.Size(396, 261);
+            this.Tab_Players.Size = new System.Drawing.Size(396, 295);
             this.Tab_Players.TabIndex = 1;
             this.Tab_Players.Text = "Players";
             this.Tab_Players.UseVisualStyleBackColor = true;
+            // 
+            // B_MaxCurrency
+            // 
+            this.B_MaxCurrency.Location = new System.Drawing.Point(232, 214);
+            this.B_MaxCurrency.Name = "B_MaxCurrency";
+            this.B_MaxCurrency.Size = new System.Drawing.Size(100, 30);
+            this.B_MaxCurrency.TabIndex = 29;
+            this.B_MaxCurrency.Text = "Max Currency";
+            this.B_MaxCurrency.UseVisualStyleBackColor = true;
+            this.B_MaxCurrency.Click += new System.EventHandler(this.B_MaxCurrency_Click);
             // 
             // L_Poki
             // 
@@ -854,14 +866,14 @@
             this.TC_Editors.Location = new System.Drawing.Point(0, 24);
             this.TC_Editors.Name = "TC_Editors";
             this.TC_Editors.SelectedIndex = 0;
-            this.TC_Editors.Size = new System.Drawing.Size(404, 287);
+            this.TC_Editors.Size = new System.Drawing.Size(404, 321);
             this.TC_Editors.TabIndex = 1;
             // 
             // Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 311);
+            this.ClientSize = new System.Drawing.Size(404, 345);
             this.Controls.Add(this.TC_Editors);
             this.Controls.Add(this.Menu_Editor);
             this.Icon = global::NHSE.WinForms.Properties.Resources.icon;
@@ -915,6 +927,7 @@
         private System.Windows.Forms.Button B_RecycleBin;
         private System.Windows.Forms.TabPage Tab_Villagers;
         private System.Windows.Forms.TabPage Tab_Players;
+        private System.Windows.Forms.Button B_MaxCurrency;
         private System.Windows.Forms.Button B_EditPlayerItems;
         private System.Windows.Forms.Label L_Wallet;
         private System.Windows.Forms.NumericUpDown NUD_Wallet;

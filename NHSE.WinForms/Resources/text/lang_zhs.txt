@@ -63,6 +63,7 @@ Editor.B_EditPlayerMisc=编辑杂项
 Editor.B_EditPlayerReactions=编辑反应
 Editor.B_EditPlayerReceivedItems=编辑收藏清单
 Editor.B_EditPlayerRecipes=编辑DIY手册
+Editor.B_MaxCurrency=Max Currency
 Editor.B_EditPlayerStorage=编辑仓库物品
 Editor.B_EditPRODesigns=编辑专业设计
 Editor.B_EditTurnipExchange=编辑大头菜行情

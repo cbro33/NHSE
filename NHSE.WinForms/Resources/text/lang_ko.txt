@@ -63,6 +63,7 @@ Editor.B_EditPlayerMisc=기타 편집
 Editor.B_EditPlayerReactions=리액션 편집
 Editor.B_EditPlayerReceivedItems=수령 아이템 편집
 Editor.B_EditPlayerRecipes=레시피 편집
+Editor.B_MaxCurrency=Max Currency
 Editor.B_EditPlayerStorage=보관함 편집
 Editor.B_EditPRODesigns=PRO 디자인 편집
 Editor.B_EditTurnipExchange=무 거래 편집

@@ -63,6 +63,7 @@ Editor.B_EditPlayerMisc=Modifiche miscellanee
 Editor.B_EditPlayerReactions=Modifica reazioni
 Editor.B_EditPlayerReceivedItems=Modifica catalogo
 Editor.B_EditPlayerRecipes=Modifica schemi
+Editor.B_MaxCurrency=Max Currency
 Editor.B_EditPlayerStorage=Modifica sgabuzzino
 Editor.B_EditPRODesigns=Modifica modelli pro
 Editor.B_EditTurnipExchange=Modifica tasso scambio rape

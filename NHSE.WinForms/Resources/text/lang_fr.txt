@@ -63,6 +63,7 @@ Editor.B_EditPlayerMisc=Edit Misc
 Editor.B_EditPlayerReactions=Edit Reactions
 Editor.B_EditPlayerReceivedItems=Edit Received Items
 Editor.B_EditPlayerRecipes=Edit Recipes
+Editor.B_MaxCurrency=Max Currency
 Editor.B_EditPlayerStorage=Edit Storage
 Editor.B_EditPRODesigns=Edit PRO Designs
 Editor.B_EditTurnipExchange=Edit Turnip Exchange

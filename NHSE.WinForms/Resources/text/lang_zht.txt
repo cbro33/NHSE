@@ -63,6 +63,7 @@ Editor.B_EditPlayerMisc=編輯雜項
 Editor.B_EditPlayerReactions=編輯表情
 Editor.B_EditPlayerReceivedItems=編輯目錄清單
 Editor.B_EditPlayerRecipes=編輯DIY手冊
+Editor.B_MaxCurrency=Max Currency
 Editor.B_EditPlayerStorage=編輯倉庫物品
 Editor.B_EditPRODesigns=編輯專業設計
 Editor.B_EditTurnipExchange=編輯大頭菜行情
