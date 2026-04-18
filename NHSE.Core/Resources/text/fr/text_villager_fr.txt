@@ -1,4 +1,4 @@
-ant00	Cyrano
+﻿ant00	Cyrano
 ant01	Antonio
 ant02	Mathilda
 ant03	Anabelle
@@ -35,6 +35,7 @@ brd15	Condor
 brd16	Jacky
 brd17	Pec
 brd18	Darius
+brd20	Babil
 bul00	Angus
 bul01	Flèche
 bul03	Beubeu
@@ -114,6 +115,7 @@ der08	Didi
 der09	Abraham
 der10	Chelsea
 der11	Shino
+der12	Mineru
 dog00	Mirza
 dog01	Avril
 dog02	Ramsès
@@ -392,6 +394,8 @@ squ15	Irène
 squ16	Roy
 squ17	Mathéo
 squ18	Pamela
+squ19	Kala
+squ20	Mara
 squ21	Terra
 tig00	Ralf
 tig01	Marito
@@ -437,9 +441,13 @@ hgc	Tiquette
 hgh	Layette
 hgs	Cousette
 kpg	Mamiral
+kpgB	Mamiral
 kpm	Liliane
+kpmB	Liliane
 kpp	Amiral
+kppB	Amiral
 kps	Lila
+kpsB	Lila
 lom	Cathie
 man	Mantin
 mka	Blanca
@@ -481,3 +489,16 @@ tuk	Dindou
 upa	Ciboulot
 wrl	Morsicus
 xct	Charly
+npc_nookinc	Nook Inc.
+npc_hotel	Hotel
+npc_hha	Happy Home Academy
+npc_nintendo	Nintendo
+npc_bankofnook	Bank of Nook
+npc_nookshopping	Nook Shopping
+npc_nookmileageprogram	Nook Mileage Program
+npc_mom	Mom
+npc_dodoairlines	Dodo Airlines
+npc_thefarwaymuseum	The Farway Museum
+npc_paradiseplanning	Paradise Planning
+npc_snowboy	Snowboy
+npc_nooklinkadmins	NookLink Admins

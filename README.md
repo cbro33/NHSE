@@ -13,18 +13,9 @@ Edits savedata dumped from the Nintendo Switch.
 
 ## What's in this fork
 
-* Added a “Max Currency” button on the Players tab to instantly set Wallet, Bank Bells, Nook Miles, Earned Miles, and Poki (when available) to their maximum values.
-* Added support for 0000000000000001 folder you don't have to make the same changes to both main.dat files inside of both 0 and 1 folder, just load in 0000000000000001 folder and make changes
-
-## Build and run (Windows)
-
-1. Build: `dotnet build NHSE.sln -c Debug`
-2. Run: `NHSE.WinForms/bin/Debug/net461/NHSE.WinForms.exe`
-
-## See Also
-
-[MyHorizons](https://github.com/Cuyler36/MyHorizons) by [Cuyler36](https://github.com/Cuyler36/)
-* Some portions of code are liberally adapted from Cuyler36's project above.
+* Added a "Max Currency" button on the Players tab to instantly set Wallet, Bank Bells, Nook Miles, Earned Miles, Poki, and Hotel Tickets (when available) to their maximum values.
+* Added support for the `0000000000000001` folder: when loading a save that has both `0000000000000000` and `0000000000000001` sibling folders, saves are automatically mirrored to both so you don't have to make the same edits twice. You can point at either an individual save folder or the wrapper directory that contains both.
+* Added an "Open most recent folder" button on the launcher that remembers the last-opened save folder.
 
 ## Other
 

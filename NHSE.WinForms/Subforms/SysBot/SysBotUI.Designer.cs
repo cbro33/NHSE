@@ -169,7 +169,7 @@
             this.RamOffset.Name = "RamOffset";
             this.RamOffset.Size = new System.Drawing.Size(83, 23);
             this.RamOffset.TabIndex = 20;
-            this.RamOffset.Text = "AD3C7FD8";
+            this.RamOffset.Text = "B27BB758";
             this.RamOffset.TextChanged += new System.EventHandler(this.RamOffset_TextChanged);
             // 
             // L_Offset
@@ -232,7 +232,7 @@
             this.RamOffsetUSB.Name = "RamOffsetUSB";
             this.RamOffsetUSB.Size = new System.Drawing.Size(83, 23);
             this.RamOffsetUSB.TabIndex = 24;
-            this.RamOffsetUSB.Text = "AD3C7FD8";
+            this.RamOffsetUSB.Text = "B27BB758";
             this.RamOffsetUSB.TextChanged += new System.EventHandler(this.RamOffsetUSB_TextChanged);
             // 
             // L_OffsetUSB
@@ -270,7 +270,7 @@
             // SysBotUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.ClientSize = new System.Drawing.Size(245, 342);
             this.Controls.Add(this.GB_USB);
             this.Controls.Add(this.GB_Inject);
@@ -285,7 +285,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SysBotUI";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SysBotUI";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SysBotUI_FormClosing);
             this.GB_Inject.ResumeLayout(false);

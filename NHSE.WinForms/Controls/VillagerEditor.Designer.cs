@@ -328,9 +328,9 @@
             // 
             // B_SetPhraseOriginal
             // 
-            this.B_SetPhraseOriginal.Location = new System.Drawing.Point(335, 70);
+            this.B_SetPhraseOriginal.Location = new System.Drawing.Point(331, 70);
             this.B_SetPhraseOriginal.Name = "B_SetPhraseOriginal";
-            this.B_SetPhraseOriginal.Size = new System.Drawing.Size(54, 20);
+            this.B_SetPhraseOriginal.Size = new System.Drawing.Size(66, 21);
             this.B_SetPhraseOriginal.TabIndex = 48;
             this.B_SetPhraseOriginal.Text = "Original";
             this.B_SetPhraseOriginal.UseVisualStyleBackColor = true;
@@ -349,7 +349,7 @@
             // VillagerEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.B_ReplaceVillager);
             this.Controls.Add(this.B_SetPhraseOriginal);
             this.Controls.Add(this.B_EditHouses);

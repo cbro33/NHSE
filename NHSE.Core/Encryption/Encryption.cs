@@ -1,82 +1,82 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
-namespace NHSE.Core
+namespace NHSE.Core;
+
+public static class Encryption
 {
-    public static class Encryption
+    private const int BlockSize = 16;
+
+    private static void GetParam(ReadOnlySpan<uint> data, int index, Span<byte> result)
     {
-        private static byte[] GetParam(uint[] data, in int index)
-        {
-            var rand = new XorShift128(data[data[index] & 0x7F]);
-            var prms = data[data[index + 1] & 0x7F] & 0x7F;
+        var rand = new XorShift128(data[(int)data[index] & 0x7F]);
+        var prms = data[(int)(data[index + 1] & 0x7F)] & 0x7F;
 
-            var rndRollCount = (prms & 0xF) + 1;
-            for (var i = 0; i < rndRollCount; i++)
-                rand.GetU64();
+        var rndRollCount = (prms & 0xF) + 1;
+        for (var i = 0; i < rndRollCount; i++)
+            rand.Next64();
 
-            var result = new byte[0x10];
-            for (var i = 0; i < result.Length; i++)
-                result[i] = (byte)(rand.GetU32() >> 24);
+        for (var i = 0; i < result.Length; i++)
+            result[i] = (byte)(rand.Next() >> 24);
+    }
 
-            return result;
-        }
+    /// <summary>
+    /// Decrypts the <see cref="encData"/> using the <see cref="headerData"/> in place.
+    /// </summary>
+    /// <param name="headerData">Header Data (at least 0x300 bytes)</param>
+    /// <param name="encData">Encrypted SaveData (modified in place)</param>
+    public static void Decrypt(Span<byte> headerData, Span<byte> encData)
+    {
+        // First 256 bytes go unused; important data starts at offset 0x100
+        var sourceSpan = headerData.Slice(0x100, 0x200);
+        ReadOnlySpan<uint> importantData = MemoryMarshal.Cast<byte, uint>(sourceSpan);
 
-        /// <summary>
-        /// Decrypts the <see cref="encData"/> using the <see cref="headerData"/> in place.
-        /// </summary>
-        /// <param name="headerData">Header Data</param>
-        /// <param name="encData">Encrypted SaveData</param>
-        public static void Decrypt(byte[] headerData, byte[] encData)
-        {
-            // First 256 bytes go unused
-            var importantData = new uint[0x80];
-            Buffer.BlockCopy(headerData, 0x100, importantData, 0, 0x200);
+        // Set up Key and Counter
+        Span<byte> key = stackalloc byte[BlockSize];
+        Span<byte> counter = stackalloc byte[BlockSize];
+        GetParam(importantData, 0, key);
+        GetParam(importantData, 2, counter);
 
-            // Set up Key
-            var key = GetParam(importantData, 0);
+        // Decrypt in place using AES-CTR
+        AesCtr.Crypt(encData, key, counter);
+    }
 
-            // Set up counter
-            var counter = GetParam(importantData, 2);
+    private static CryptoFile GenerateHeaderFile(uint seed, ReadOnlySpan<byte> versionData)
+    {
+        // Generate 128 Random uints which will be used for params
+        var random = new XorShift128(seed);
+        Span<uint> encryptData = stackalloc uint[128];
+        for (var i = 0; i < encryptData.Length; i++)
+            encryptData[i] = random.Next();
 
-            // Do the AES
-            using var aesCtr = new Aes128CounterMode(counter);
-            var transform = aesCtr.CreateDecryptor(key, counter);
+        var headerData = new byte[0x300];
+        var key = new byte[BlockSize];
+        var ctr = new byte[BlockSize];
 
-            transform.TransformBlock(encData, 0, encData.Length, encData, 0);
-        }
+        versionData[..0x100].CopyTo(headerData);
+        MemoryMarshal.AsBytes(encryptData).CopyTo(headerData.AsSpan(0x100));
 
-        private static CryptoFile GenerateHeaderFile(uint seed, byte[] versionData)
-        {
-            // Generate 128 Random uints which will be used for params
-            var random = new XorShift128(seed);
-            var encryptData = new uint[128];
-            for (var i = 0; i < encryptData.Length; i++)
-                encryptData[i] = random.GetU32();
+        GetParam(encryptData, 0, key);
+        GetParam(encryptData, 2, ctr);
 
-            var headerData = new byte[0x300];
-            Buffer.BlockCopy(versionData, 0, headerData, 0, 0x100);
-            Buffer.BlockCopy(encryptData, 0, headerData, 0x100, 0x200);
-            return new CryptoFile(headerData, GetParam(encryptData, 0), GetParam(encryptData, 2));
-        }
+        return new CryptoFile(headerData, key, ctr);
+    }
 
-        /// <summary>
-        /// Encrypts the <see cref="data"/> (savedata) using the provided <see cref="seed"/>.
-        /// </summary>
-        /// <param name="data">SaveData to encrypt</param>
-        /// <param name="seed">Seed to encrypt with</param>
-        /// <param name="versionData">Version data to encrypt with</param>
-        /// <returns>Encrypted SaveData, and associated headerData</returns>
-        public static EncryptedSaveFile Encrypt(byte[] data, uint seed, byte[] versionData)
-        {
-            // Generate header file and get key and counter
-            var header = GenerateHeaderFile(seed, versionData);
+    /// <summary>
+    /// Encrypts the <see cref="data"/> (savedata) using the provided <see cref="seed"/>.
+    /// </summary>
+    /// <param name="data">SaveData to encrypt</param>
+    /// <param name="seed">Seed to encrypt with</param>
+    /// <param name="versionData">Version data to encrypt with</param>
+    /// <returns>Encrypted SaveData, and associated headerData</returns>
+    public static EncryptedSaveFile Encrypt(ReadOnlySpan<byte> data, uint seed, ReadOnlySpan<byte> versionData)
+    {
+        // Generate header file and get key and counter
+        var header = GenerateHeaderFile(seed, versionData);
 
-            // Encrypt file
-            using var aesCtr = new Aes128CounterMode(header.Ctr);
-            var transform = aesCtr.CreateEncryptor(header.Key, header.Ctr);
-            var encData = new byte[data.Length];
-            transform.TransformBlock(data, 0, data.Length, encData, 0);
+        // Encrypt using AES-CTR
+        var encData = AesCtr.Encrypt(data, header.Key.Span, header.Ctr.Span);
 
-            return new EncryptedSaveFile(encData, header.Data);
-        }
+        return new EncryptedSaveFile(encData, header.Data);
     }
 }

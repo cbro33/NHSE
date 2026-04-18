@@ -1,111 +1,98 @@
 ﻿using System;
 using System.Windows.Forms;
 using NHSE.Injection;
-using NHSE.WinForms.Properties;
 
-namespace NHSE.WinForms
+namespace NHSE.WinForms;
+
+public sealed class SysBotController(InjectionType type)
 {
-    public class SysBotController
+    public readonly SysBot Bot = new();
+
+    private static SysBotSettings Config => Program.Settings.SysBot;
+
+    public string IP => Config.IP;
+    public string Port => Config.Port.ToString();
+
+    public bool Connect(string ip, string port)
     {
-        public SysBotController(InjectionType type) => Type = type;
+        if (!int.TryParse(port, out var p))
+            p = 6000;
 
-        private readonly InjectionType Type;
-        public readonly SysBot Bot = new();
-        private readonly Settings Settings = Settings.Default;
-
-        public string IP => Settings.SysBotIP;
-        public string Port => Settings.SysBotPort.ToString();
-
-        public bool Connect(string ip, string port)
+        try
         {
-            if (!int.TryParse(port, out var p))
-                p = 6000;
-
-            try
-            {
-                Bot.Connect(ip, p);
-            }
-            catch (Exception ex)
-            {
-                WinFormsUtil.Error(ex.Message);
-                return false;
-            }
-
-            var settings = Settings;
-            settings.SysBotIP = ip;
-            settings.SysBotPort = p;
-            settings.Save();
-
-            return true;
+            Bot.Connect(ip, p);
+        }
+        catch (Exception ex)
+        {
+            WinFormsUtil.Error(ex.Message);
+            return false;
         }
 
-        public uint GetDefaultOffset()
-        {
-            var settings = Settings;
-            return Type switch
-            {
-                InjectionType.Generic => settings.SysBotGenericOffset,
-                InjectionType.Pouch => settings.SysBotPouchOffset,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-        }
+        Config.IP = ip;
+        Config.Port = p;
 
-        public void SetOffset(uint value)
-        {
-            var settings = Settings;
-            switch (Type)
-            {
-                case InjectionType.Generic: settings.SysBotGenericOffset = value; break;
-                case InjectionType.Pouch: settings.SysBotPouchOffset = value; break;
-                default: return;
-            }
-            settings.Save();
-        }
+        return true;
+    }
 
-        public void HexEdit(uint offset, int length)
+    public uint GetDefaultOffset() => type switch
+    {
+        InjectionType.Generic => Config.GenericOffset,
+        InjectionType.Pouch => Config.PouchOffset,
+        _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+    };
+
+    public void SetOffset(uint value)
+    {
+        switch (type)
         {
-            var read = ReadBytes(offset, length);
-            using var ram = new SimpleHexEditor(read);
-            if (ram.ShowDialog() != DialogResult.OK)
+            case InjectionType.Generic: Config.GenericOffset = value; break;
+            case InjectionType.Pouch: Config.PouchOffset = value; break;
+            default: return;
+        }
+    }
+
+    public void HexEdit(uint offset, int length)
+    {
+        var read = ReadBytes(offset, length);
+        using var ram = new SimpleHexEditor(read);
+        if (ram.ShowDialog() != DialogResult.OK)
+            return;
+
+        var write = ram.Bytes;
+        if (read.Length != write.Length)
+        {
+            var prompt = WinFormsUtil.Prompt(MessageBoxButtons.OKCancel,
+                string.Format(MessageStrings.MsgDataSizeMismatchRAM, read.Length, write.Length),
+                MessageStrings.MsgAskWriteAnyway);
+
+            if (prompt != DialogResult.OK)
                 return;
-
-            var write = ram.Bytes;
-            if (read.Length != write.Length)
-            {
-                var prompt = WinFormsUtil.Prompt(MessageBoxButtons.OKCancel,
-                    string.Format(MessageStrings.MsgDataSizeMismatchRAM, read.Length, write.Length),
-                    MessageStrings.MsgAskWriteAnyway);
-
-                if (prompt != DialogResult.OK)
-                    return;
-            }
-
-            WriteBytes(ram.Bytes, offset);
-            SetOffset(offset);
-            System.Media.SystemSounds.Asterisk.Play();
         }
 
-        public void PopPrompt()
-        {
-            if (Settings.SysBotPrompted)
-                return;
+        WriteBytes(ram.Bytes, offset);
+        SetOffset(offset);
+        System.Media.SystemSounds.Asterisk.Play();
+    }
 
-            WinFormsUtil.Alert(MessageStrings.MsgSysBotInfo, MessageStrings.MsgSysBotRequired);
-            Settings.SysBotPrompted = true;
-            Settings.Save();
-        }
+    public void PopPrompt()
+    {
+        if (Config.Prompted)
+            return;
 
-        public void WriteBytes(byte[] data, uint offset)
-        {
-            Bot.WriteBytes(data, offset);
-            SetOffset(offset);
-        }
+        WinFormsUtil.Alert(MessageStrings.MsgSysBotInfo, MessageStrings.MsgSysBotRequired);
+        Config.Prompted = true;
+    }
 
-        public byte[] ReadBytes(uint offset, int length)
-        {
-            var result = Bot.ReadBytes(offset, length);
-            SetOffset(offset);
-            return result;
-        }
+    public void WriteBytes(byte[] data, uint offset)
+    {
+        Bot.WriteBytes(data, offset);
+        SetOffset(offset);
+    }
+
+    public byte[] ReadBytes(uint offset, int length)
+    {
+        var result = Bot.ReadBytes(offset, length);
+        SetOffset(offset);
+        return result;
     }
 }

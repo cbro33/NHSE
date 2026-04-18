@@ -1,17 +1,6 @@
-﻿namespace NHSE.Parsing
-{
-    public class BCSVFieldParam
-    {
-        public const int SIZE = 8;
-        public readonly uint ColumnKey;
-        public readonly int Offset;
-        public readonly int Index;
+﻿namespace NHSE.Parsing;
 
-        public BCSVFieldParam(uint key, int offset, int index)
-        {
-            ColumnKey = key;
-            Offset = offset;
-            Index = index;
-        }
-    }
+public sealed record BCSVFieldParam(uint ColumnKey, int Offset, int Index)
+{
+    public const int SIZE = 8;
 }

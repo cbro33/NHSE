@@ -28,189 +28,192 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.B_Cancel = new System.Windows.Forms.Button();
-            this.B_Save = new System.Windows.Forms.Button();
-            this.L_Birthday = new System.Windows.Forms.Label();
-            this.NUD_BirthMonth = new System.Windows.Forms.NumericUpDown();
-            this.NUD_BirthDay = new System.Windows.Forms.NumericUpDown();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.Tab_Misc = new System.Windows.Forms.TabPage();
-            this.Tab_Profile = new System.Windows.Forms.TabPage();
-            this.ProfileFruit = new NHSE.WinForms.RestrictedItemSelect();
-            this.CAL_ProfileTimestamp = new System.Windows.Forms.DateTimePicker();
-            this.CHK_ProfileMadeVillage = new System.Windows.Forms.CheckBox();
-            this.L_ProfileSpecialtyFruit = new System.Windows.Forms.Label();
-            this.L_ProfileTimestamp = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.NUD_BirthMonth)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.NUD_BirthDay)).BeginInit();
-            this.tabControl1.SuspendLayout();
-            this.Tab_Misc.SuspendLayout();
-            this.Tab_Profile.SuspendLayout();
-            this.SuspendLayout();
+            B_Cancel = new System.Windows.Forms.Button();
+            B_Save = new System.Windows.Forms.Button();
+            L_Birthday = new System.Windows.Forms.Label();
+            NUD_BirthMonth = new System.Windows.Forms.NumericUpDown();
+            NUD_BirthDay = new System.Windows.Forms.NumericUpDown();
+            tabControl1 = new System.Windows.Forms.TabControl();
+            Tab_Misc = new System.Windows.Forms.TabPage();
+            Tab_Profile = new System.Windows.Forms.TabPage();
+            RIS_ProfileFruit = new RestrictedItemSelect();
+            CAL_ProfileTimestamp = new System.Windows.Forms.DateTimePicker();
+            CHK_ProfileMadeVillage = new System.Windows.Forms.CheckBox();
+            L_ProfileSpecialtyFruit = new System.Windows.Forms.Label();
+            L_ProfileTimestamp = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)NUD_BirthMonth).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)NUD_BirthDay).BeginInit();
+            tabControl1.SuspendLayout();
+            Tab_Misc.SuspendLayout();
+            Tab_Profile.SuspendLayout();
+            SuspendLayout();
             // 
             // B_Cancel
             // 
-            this.B_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.B_Cancel.Location = new System.Drawing.Point(133, 181);
-            this.B_Cancel.Name = "B_Cancel";
-            this.B_Cancel.Size = new System.Drawing.Size(72, 23);
-            this.B_Cancel.TabIndex = 7;
-            this.B_Cancel.Text = "Cancel";
-            this.B_Cancel.UseVisualStyleBackColor = true;
-            this.B_Cancel.Click += new System.EventHandler(this.B_Cancel_Click);
+            B_Cancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            B_Cancel.Location = new System.Drawing.Point(211, 233);
+            B_Cancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            B_Cancel.Name = "B_Cancel";
+            B_Cancel.Size = new System.Drawing.Size(84, 27);
+            B_Cancel.TabIndex = 7;
+            B_Cancel.Text = "Cancel";
+            B_Cancel.UseVisualStyleBackColor = true;
+            B_Cancel.Click += B_Cancel_Click;
             // 
             // B_Save
             // 
-            this.B_Save.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.B_Save.Location = new System.Drawing.Point(211, 181);
-            this.B_Save.Name = "B_Save";
-            this.B_Save.Size = new System.Drawing.Size(72, 23);
-            this.B_Save.TabIndex = 6;
-            this.B_Save.Text = "Save";
-            this.B_Save.UseVisualStyleBackColor = true;
-            this.B_Save.Click += new System.EventHandler(this.B_Save_Click);
+            B_Save.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            B_Save.Location = new System.Drawing.Point(302, 233);
+            B_Save.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            B_Save.Name = "B_Save";
+            B_Save.Size = new System.Drawing.Size(84, 27);
+            B_Save.TabIndex = 6;
+            B_Save.Text = "Save";
+            B_Save.UseVisualStyleBackColor = true;
+            B_Save.Click += B_Save_Click;
             // 
             // L_Birthday
             // 
-            this.L_Birthday.Location = new System.Drawing.Point(6, 3);
-            this.L_Birthday.Name = "L_Birthday";
-            this.L_Birthday.Size = new System.Drawing.Size(104, 23);
-            this.L_Birthday.TabIndex = 8;
-            this.L_Birthday.Text = "Birthday (M/D):";
-            this.L_Birthday.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            L_Birthday.Location = new System.Drawing.Point(7, 3);
+            L_Birthday.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            L_Birthday.Name = "L_Birthday";
+            L_Birthday.Size = new System.Drawing.Size(121, 27);
+            L_Birthday.TabIndex = 8;
+            L_Birthday.Text = "Birthday (M/D):";
+            L_Birthday.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // NUD_BirthMonth
             // 
-            this.NUD_BirthMonth.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.NUD_BirthMonth.Location = new System.Drawing.Point(116, 6);
-            this.NUD_BirthMonth.Name = "NUD_BirthMonth";
-            this.NUD_BirthMonth.Size = new System.Drawing.Size(37, 20);
-            this.NUD_BirthMonth.TabIndex = 9;
-            this.NUD_BirthMonth.Value = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
+            NUD_BirthMonth.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            NUD_BirthMonth.Location = new System.Drawing.Point(135, 7);
+            NUD_BirthMonth.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            NUD_BirthMonth.Name = "NUD_BirthMonth";
+            NUD_BirthMonth.Size = new System.Drawing.Size(43, 20);
+            NUD_BirthMonth.TabIndex = 9;
+            NUD_BirthMonth.Value = new decimal(new int[] { 12, 0, 0, 0 });
             // 
             // NUD_BirthDay
             // 
-            this.NUD_BirthDay.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.NUD_BirthDay.Location = new System.Drawing.Point(159, 6);
-            this.NUD_BirthDay.Name = "NUD_BirthDay";
-            this.NUD_BirthDay.Size = new System.Drawing.Size(37, 20);
-            this.NUD_BirthDay.TabIndex = 10;
-            this.NUD_BirthDay.Value = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
+            NUD_BirthDay.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            NUD_BirthDay.Location = new System.Drawing.Point(186, 7);
+            NUD_BirthDay.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            NUD_BirthDay.Name = "NUD_BirthDay";
+            NUD_BirthDay.Size = new System.Drawing.Size(43, 20);
+            NUD_BirthDay.TabIndex = 10;
+            NUD_BirthDay.Value = new decimal(new int[] { 30, 0, 0, 0 });
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.Tab_Misc);
-            this.tabControl1.Controls.Add(this.Tab_Profile);
-            this.tabControl1.Location = new System.Drawing.Point(12, 12);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(271, 163);
-            this.tabControl1.TabIndex = 12;
+            tabControl1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            tabControl1.Controls.Add(Tab_Misc);
+            tabControl1.Controls.Add(Tab_Profile);
+            tabControl1.Location = new System.Drawing.Point(14, 14);
+            tabControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new System.Drawing.Size(372, 212);
+            tabControl1.TabIndex = 12;
             // 
             // Tab_Misc
             // 
-            this.Tab_Misc.Controls.Add(this.L_Birthday);
-            this.Tab_Misc.Controls.Add(this.NUD_BirthDay);
-            this.Tab_Misc.Controls.Add(this.NUD_BirthMonth);
-            this.Tab_Misc.Location = new System.Drawing.Point(4, 22);
-            this.Tab_Misc.Name = "Tab_Misc";
-            this.Tab_Misc.Padding = new System.Windows.Forms.Padding(3);
-            this.Tab_Misc.Size = new System.Drawing.Size(222, 112);
-            this.Tab_Misc.TabIndex = 0;
-            this.Tab_Misc.Text = "Misc";
-            this.Tab_Misc.UseVisualStyleBackColor = true;
+            Tab_Misc.Controls.Add(L_Birthday);
+            Tab_Misc.Controls.Add(NUD_BirthDay);
+            Tab_Misc.Controls.Add(NUD_BirthMonth);
+            Tab_Misc.Location = new System.Drawing.Point(4, 24);
+            Tab_Misc.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Tab_Misc.Name = "Tab_Misc";
+            Tab_Misc.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Tab_Misc.Size = new System.Drawing.Size(364, 230);
+            Tab_Misc.TabIndex = 0;
+            Tab_Misc.Text = "Misc";
+            Tab_Misc.UseVisualStyleBackColor = true;
             // 
             // Tab_Profile
             // 
-            this.Tab_Profile.Controls.Add(this.ProfileFruit);
-            this.Tab_Profile.Controls.Add(this.CAL_ProfileTimestamp);
-            this.Tab_Profile.Controls.Add(this.CHK_ProfileMadeVillage);
-            this.Tab_Profile.Controls.Add(this.L_ProfileSpecialtyFruit);
-            this.Tab_Profile.Controls.Add(this.L_ProfileTimestamp);
-            this.Tab_Profile.Location = new System.Drawing.Point(4, 22);
-            this.Tab_Profile.Name = "Tab_Profile";
-            this.Tab_Profile.Padding = new System.Windows.Forms.Padding(3);
-            this.Tab_Profile.Size = new System.Drawing.Size(263, 137);
-            this.Tab_Profile.TabIndex = 1;
-            this.Tab_Profile.Text = "Profile";
-            this.Tab_Profile.UseVisualStyleBackColor = true;
+            Tab_Profile.Controls.Add(RIS_ProfileFruit);
+            Tab_Profile.Controls.Add(CAL_ProfileTimestamp);
+            Tab_Profile.Controls.Add(CHK_ProfileMadeVillage);
+            Tab_Profile.Controls.Add(L_ProfileSpecialtyFruit);
+            Tab_Profile.Controls.Add(L_ProfileTimestamp);
+            Tab_Profile.Location = new System.Drawing.Point(4, 24);
+            Tab_Profile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Tab_Profile.Name = "Tab_Profile";
+            Tab_Profile.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Tab_Profile.Size = new System.Drawing.Size(364, 184);
+            Tab_Profile.TabIndex = 1;
+            Tab_Profile.Text = "Profile";
+            Tab_Profile.UseVisualStyleBackColor = true;
             // 
-            // restrictedItemSelect1
+            // RIS_ProfileFruit
             // 
-            this.ProfileFruit.Location = new System.Drawing.Point(9, 61);
-            this.ProfileFruit.Name = "ProfileFruit";
-            this.ProfileFruit.Size = new System.Drawing.Size(143, 48);
-            this.ProfileFruit.TabIndex = 17;
-            this.ProfileFruit.Value = ((ushort)(0));
+            RIS_ProfileFruit.Location = new System.Drawing.Point(10, 82);
+            RIS_ProfileFruit.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
+            RIS_ProfileFruit.Name = "RIS_ProfileFruit";
+            RIS_ProfileFruit.Size = new System.Drawing.Size(167, 55);
+            RIS_ProfileFruit.TabIndex = 17;
             // 
             // CAL_ProfileTimestamp
             // 
-            this.CAL_ProfileTimestamp.Location = new System.Drawing.Point(9, 22);
-            this.CAL_ProfileTimestamp.Name = "CAL_ProfileTimestamp";
-            this.CAL_ProfileTimestamp.Size = new System.Drawing.Size(200, 20);
-            this.CAL_ProfileTimestamp.TabIndex = 16;
+            CAL_ProfileTimestamp.Location = new System.Drawing.Point(10, 25);
+            CAL_ProfileTimestamp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            CAL_ProfileTimestamp.Name = "CAL_ProfileTimestamp";
+            CAL_ProfileTimestamp.Size = new System.Drawing.Size(233, 23);
+            CAL_ProfileTimestamp.TabIndex = 16;
             // 
             // CHK_ProfileMadeVillage
             // 
-            this.CHK_ProfileMadeVillage.AutoSize = true;
-            this.CHK_ProfileMadeVillage.Location = new System.Drawing.Point(9, 115);
-            this.CHK_ProfileMadeVillage.Name = "CHK_ProfileMadeVillage";
-            this.CHK_ProfileMadeVillage.Size = new System.Drawing.Size(87, 17);
-            this.CHK_ProfileMadeVillage.TabIndex = 15;
-            this.CHK_ProfileMadeVillage.Text = "Made Village";
-            this.CHK_ProfileMadeVillage.UseVisualStyleBackColor = true;
+            CHK_ProfileMadeVillage.AutoSize = true;
+            CHK_ProfileMadeVillage.Location = new System.Drawing.Point(10, 157);
+            CHK_ProfileMadeVillage.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            CHK_ProfileMadeVillage.Name = "CHK_ProfileMadeVillage";
+            CHK_ProfileMadeVillage.Size = new System.Drawing.Size(94, 19);
+            CHK_ProfileMadeVillage.TabIndex = 15;
+            CHK_ProfileMadeVillage.Text = "Made Village";
+            CHK_ProfileMadeVillage.UseVisualStyleBackColor = true;
             // 
             // L_ProfileSpecialtyFruit
             // 
-            this.L_ProfileSpecialtyFruit.AutoSize = true;
-            this.L_ProfileSpecialtyFruit.Location = new System.Drawing.Point(6, 45);
-            this.L_ProfileSpecialtyFruit.Name = "L_ProfileSpecialtyFruit";
-            this.L_ProfileSpecialtyFruit.Size = new System.Drawing.Size(27, 13);
-            this.L_ProfileSpecialtyFruit.TabIndex = 14;
-            this.L_ProfileSpecialtyFruit.Text = "Fruit";
+            L_ProfileSpecialtyFruit.AutoSize = true;
+            L_ProfileSpecialtyFruit.Location = new System.Drawing.Point(7, 64);
+            L_ProfileSpecialtyFruit.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            L_ProfileSpecialtyFruit.Name = "L_ProfileSpecialtyFruit";
+            L_ProfileSpecialtyFruit.Size = new System.Drawing.Size(76, 15);
+            L_ProfileSpecialtyFruit.TabIndex = 14;
+            L_ProfileSpecialtyFruit.Text = "Fruit (Profile)";
             // 
             // L_ProfileTimestamp
             // 
-            this.L_ProfileTimestamp.AutoSize = true;
-            this.L_ProfileTimestamp.Location = new System.Drawing.Point(6, 6);
-            this.L_ProfileTimestamp.Name = "L_ProfileTimestamp";
-            this.L_ProfileTimestamp.Size = new System.Drawing.Size(58, 13);
-            this.L_ProfileTimestamp.TabIndex = 12;
-            this.L_ProfileTimestamp.Text = "Timestamp";
+            L_ProfileTimestamp.AutoSize = true;
+            L_ProfileTimestamp.Location = new System.Drawing.Point(7, 7);
+            L_ProfileTimestamp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            L_ProfileTimestamp.Name = "L_ProfileTimestamp";
+            L_ProfileTimestamp.Size = new System.Drawing.Size(67, 15);
+            L_ProfileTimestamp.TabIndex = 12;
+            L_ProfileTimestamp.Text = "Timestamp";
             // 
             // MiscPlayerEditor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(295, 216);
-            this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.B_Cancel);
-            this.Controls.Add(this.B_Save);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = global::NHSE.WinForms.Properties.Resources.icon;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "MiscPlayerEditor";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Misc Player Detail Editor";
-            ((System.ComponentModel.ISupportInitialize)(this.NUD_BirthMonth)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.NUD_BirthDay)).EndInit();
-            this.tabControl1.ResumeLayout(false);
-            this.Tab_Misc.ResumeLayout(false);
-            this.Tab_Profile.ResumeLayout(false);
-            this.Tab_Profile.PerformLayout();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(400, 273);
+            Controls.Add(tabControl1);
+            Controls.Add(B_Cancel);
+            Controls.Add(B_Save);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            Icon = Properties.Resources.icon;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "MiscPlayerEditor";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "Misc Player Detail Editor";
+            ((System.ComponentModel.ISupportInitialize)NUD_BirthMonth).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NUD_BirthDay).EndInit();
+            tabControl1.ResumeLayout(false);
+            Tab_Misc.ResumeLayout(false);
+            Tab_Profile.ResumeLayout(false);
+            Tab_Profile.PerformLayout();
+            ResumeLayout(false);
 
         }
 
@@ -225,9 +228,9 @@
         private System.Windows.Forms.TabPage Tab_Misc;
         private System.Windows.Forms.TabPage Tab_Profile;
         private System.Windows.Forms.Label L_ProfileTimestamp;
-        private System.Windows.Forms.Label L_ProfileSpecialtyFruit;
         private System.Windows.Forms.CheckBox CHK_ProfileMadeVillage;
         private System.Windows.Forms.DateTimePicker CAL_ProfileTimestamp;
-        private RestrictedItemSelect ProfileFruit;
+        private RestrictedItemSelect RIS_ProfileFruit;
+        private System.Windows.Forms.Label L_ProfileSpecialtyFruit;
     }
 }

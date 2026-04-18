@@ -1,28 +1,23 @@
 ﻿using System.Windows.Forms;
-using NHSE.WinForms.Properties;
 
-namespace NHSE.WinForms
+namespace NHSE.WinForms;
+
+public partial class SettingsEditor : Form
 {
-    public partial class SettingsEditor : Form
+    public SettingsEditor()
     {
-        private readonly Settings obj;
+        InitializeComponent();
+        PG_Settings.SelectedObject = Program.Settings;
+    }
 
-        public SettingsEditor()
-        {
-            obj = Settings.Default;
-            InitializeComponent();
-            PG_Settings.SelectedObject = obj;
-        }
+    private void SettingsEditor_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        // Settings are saved when Main form closes
+    }
 
-        private void SettingsEditor_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            obj.Save();
-        }
-
-        private void SettingsEditor_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.W && ModifierKeys == Keys.Control)
-                Close();
-        }
+    private void SettingsEditor_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.W && ModifierKeys == Keys.Control)
+            Close();
     }
 }

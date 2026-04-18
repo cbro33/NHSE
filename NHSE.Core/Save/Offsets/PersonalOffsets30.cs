@@ -1,0 +1,60 @@
+﻿using System;
+
+namespace NHSE.Core;
+
+/// <summary>
+/// <inheritdoc cref="PersonalOffsets"/>
+/// </summary>
+public sealed class PersonalOffsets30 : PersonalOffsets, IPersonal30
+{
+    // GSavePlayer
+    private const int Player = 0x110;
+
+    // shifted down as LookPack increased from af90->c120
+    public override int PersonalId => Player + 0xc138;
+    public override int EventFlagsPlayer => Player + 0xc170;
+    public override int EventFlagsPlayerLength => 0x1000; // up from 0xE00
+
+    // GSaveLifeSupport
+    private const int GSaveLifeSupport = Player + 0xd170;
+    public override int CountAchievement => GSaveLifeSupport + 0xE98; // CountAchievement
+    public override int NowPoint => GSaveLifeSupport + 0x5498; // Nook Miles
+    public override int TotalPoint => NowPoint + 8; // Total Nook Miles Earned
+
+    public override int Birthday => Player + 0x1341c;
+
+    public override int ProfileMain => Player + 0x13430;
+    public override int ProfilePhoto => ProfileMain + 0x14;
+    public override int ProfileBirthday => ProfileMain + 0x23058;
+    public override int ProfileFruit => ProfileMain + 0x2305C;
+    public override int ProfileTimestamp => ProfileMain + 0x230CC;
+    public override int ProfileIsMakeVillage => ProfileMain + 0x230D0;
+
+    // end player
+
+    private const int PlayerOther = 0x37be0;
+
+    public override int Pockets1 => PlayerOther + 0x10;
+    public override int Pockets2 => Pockets1 + (8 * Pockets1Count) + 0x18;
+    public override int Wallet => Pockets2 + (8 * Pockets2Count) + 0x18;
+    public override int ItemChest => PlayerOther + 0x18C;
+
+    // chest increased in size! 9C44 => 11944
+    public override int ItemChestCount => 0x11944 / Item.SIZE; // 9000
+
+    public override int ItemCollectBit => PlayerOther + 0x11d58;
+    public override int ItemRemakeCollectBit => PlayerOther + 0x124ac;
+    public override int Manpu => PlayerOther + 0x12c7c;
+    public override int Bank => PlayerOther + 0x2d69c;
+    public override int Recipes => Bank + 0x10;
+
+    public override int MaxRecipeID => 0x430; // unchanged
+    public override int MaxRemakeBitFlag => 0x7D0 * 32;
+
+    // Additional struct added in 3.0.0 for Hotel; fetch via Offset's interface extension method.
+    public int Offset30s_064c1881 => PlayerOther + 0x3C6D0;
+    public int Length30s_064c1881 => 0x790;
+
+    public override IReactionStore ReadReactions(ReadOnlySpan<byte> data) => data.Slice(Manpu, GSavePlayerManpu15.SIZE).ToStructure<GSavePlayerManpu15>();
+    public override void SetReactions(Span<byte> data, IReactionStore value) => ((GSavePlayerManpu15)value).ToBytes().CopyTo(data[Manpu..]);
+}

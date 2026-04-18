@@ -1,4 +1,4 @@
-ant00	Theo
+﻿ant00	Theo
 ant01	Siggi
 ant02	Mathilda
 ant03	Annabell
@@ -35,6 +35,7 @@ brd15	Lukas
 brd16	Pierre
 brd17	Picko
 brd18	Nestor
+brd20	Tulin
 bul00	Angus
 bul01	Toro
 bul03	Carlos
@@ -114,6 +115,7 @@ der08	Vroni
 der09	Erik
 der10	Chelsea
 der11	Yoshino
+der12	Mineru
 dog00	Bienchen
 dog01	Hasso
 dog02	Viktor
@@ -392,6 +394,8 @@ squ15	Trita
 squ16	Steffen
 squ17	Huschke
 squ18	Nadine
+squ19	A-Chan
+squ20	L-Pyon
 squ21	Vega
 tig00	Boris
 tig01	Gisbert
@@ -437,9 +441,13 @@ hgc	Minna
 hgh	Tina
 hgs	Sina
 kpg	Bonnie
+kpgB	Bonnie
 kpm	Lore
+kpmB	Lore
 kpp	Käpten
+kppB	Käpten
 kps	Lotte
+kpsB	Lotte
 lom	Katja
 man	Sigmar
 mka	Blanka
@@ -481,3 +489,16 @@ tuk	Gernod
 upa	Samselt
 wrl	Winci
 xct	Olli
+npc_nookinc	Nook Inc.
+npc_hotel	Hotel
+npc_hha	Happy Home Academy
+npc_nintendo	Nintendo
+npc_bankofnook	Bank of Nook
+npc_nookshopping	Nook Shopping
+npc_nookmileageprogram	Nook Mileage Program
+npc_mom	Mom
+npc_dodoairlines	Dodo Airlines
+npc_thefarwaymuseum	The Farway Museum
+npc_paradiseplanning	Paradise Planning
+npc_snowboy	Snowboy
+npc_nooklinkadmins	NookLink Admins

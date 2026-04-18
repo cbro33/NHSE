@@ -1,30 +1,29 @@
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using NHSE.Core;
 using Xunit;
 
-namespace NHSE.Tests
+namespace NHSE.Tests;
+
+public static class BuildingTests
 {
-    public class BuildingTests
+    [Fact]
+    public static void BuildingMarshal()
     {
-        [Fact]
-        public void BuildingMarshal()
-        {
-            var building = new Building();
-            var bytes = building.ToBytesClass();
-            bytes.Length.Should().Be(Building.SIZE);
-        }
+        var building = new Building();
+        var bytes = building.ToBytesClass();
+        bytes.Length.Should().Be(Building.SIZE);
+    }
 
-        [Fact]
-        public void BuildingClear()
-        {
-            var item = new Building {BuildingType = BuildingType.PlayerHouse1, X=5, Y=7};
-            var bytes = item.ToBytesClass();
-            bytes.Any(z => z != 0).Should().BeTrue();
+    [Fact]
+    public static void BuildingClear()
+    {
+        var item = new Building {BuildingType = BuildingType.PlayerHouse1, X=5, Y=7};
+        var bytes = item.ToBytesClass();
+        bytes.Any(z => z != 0).Should().BeTrue();
 
-            item.Clear();
-            bytes = item.ToBytesClass();
-            bytes.Any(z => z != 0).Should().BeFalse();
-        }
+        item.Clear();
+        bytes = item.ToBytesClass();
+        bytes.Any(z => z != 0).Should().BeFalse();
     }
 }

@@ -1,216 +1,91 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace NHSE.Core
+namespace NHSE.Core;
+
+/// <summary>
+/// Array reusable logic
+/// </summary>
+public static class ArrayUtil
 {
-    /// <summary>
-    /// Array reusable logic
-    /// </summary>
-    public static class ArrayUtil
+    public static int ReplaceOccurrences(this Span<byte> array, ReadOnlySpan<byte> pattern, ReadOnlySpan<byte> swap)
     {
-        public static byte[] Slice(this byte[] src, int offset, int length)
+        if (pattern.Length != swap.Length)
+            return -1;
+        if (pattern.SequenceEqual(swap))
+            return 0;
+
+        int count = 0;
+        int ofs = 0;
+        while (true)
         {
-            byte[] data = new byte[length];
-            Buffer.BlockCopy(src, offset, data, 0, data.Length);
-            return data;
+            var index = array[ofs..].IndexOf(pattern);
+            if (index == -1)
+                return count;
+            ofs += index;
+
+            swap.CopyTo(array[ofs..]);
+            ofs += swap.Length; // skip past swapped data
+            ++count;
+        }
+    }
+
+    /// <summary>
+    /// Pads the specified byte array on the left side with the given padding bytes until it reaches the desired total length.
+    /// </summary>
+    /// <param name="original">The original byte array to pad.</param>
+    /// <param name="totalLength">The desired total length of the resulting array.</param>
+    /// <param name="paddingBytes">The byte pattern to use for padding. If multiple bytes are provided, they will repeat as needed.</param>
+    /// <returns>
+    /// A new byte array of <paramref name="totalLength"/> with padding on the left and the original content on the right.
+    /// If <paramref name="original"/> is already equal to or longer than <paramref name="totalLength"/>, returns the original array unchanged.
+    /// </returns>
+    public static byte[] PadLeft(byte[] original, int totalLength, byte[] paddingBytes)
+    {
+        int bytesNeeded = totalLength - original.Length;
+        if (bytesNeeded <= 0) return original;
+
+        byte[] paddedArray = new byte[totalLength];
+        int padBytesCount = paddingBytes.Length;
+
+        // Fill the left with padding bytes
+        for (int i = 0; i < bytesNeeded; i += padBytesCount)
+        {
+            for (int j = 0; j < padBytesCount && i + j < bytesNeeded; j++)
+                paddedArray[i + j] = paddingBytes[j];
         }
 
-        public static byte[] SliceEnd(this byte[] src, int offset)
+        // Copy the original array to the right of the padding
+        Buffer.BlockCopy(original, 0, paddedArray, bytesNeeded, original.Length);
+        return paddedArray;
+    }
+    /// <summary>
+    /// Pads the specified byte array on the right side with the given padding bytes until it reaches the desired total length.
+    /// </summary>
+    /// <param name="original">The original byte array to pad.</param>
+    /// <param name="totalLength">The desired total length of the resulting array.</param>
+    /// <param name="paddingBytes">The byte pattern to use for padding. If multiple bytes are provided, they will repeat as needed.</param>
+    /// <returns>
+    /// A new byte array of <paramref name="totalLength"/> with the original content on the left and padding on the right.
+    /// If <paramref name="original"/> is already equal to or longer than <paramref name="totalLength"/>, returns the original array unchanged.
+    /// </returns>
+    public static byte[] PadRight(byte[] original, int totalLength, byte[] paddingBytes)
+    {
+        int bytesNeeded = totalLength - original.Length;
+        if (bytesNeeded <= 0) return original;
+
+        byte[] paddedArray = new byte[totalLength];
+        // Copy the original array to the left
+        Buffer.BlockCopy(original, 0, paddedArray, 0, original.Length);
+
+        int padBytesCount = paddingBytes.Length;
+
+        // Fill the right with padding bytes
+        for (int i = 0; i < bytesNeeded; i += padBytesCount)
         {
-            int length = src.Length - offset;
-            byte[] data = new byte[length];
-            Buffer.BlockCopy(src, offset, data, 0, data.Length);
-            return data;
+            for (int j = 0; j < padBytesCount && original.Length + i + j < totalLength; j++)
+                paddedArray[original.Length + i + j] = paddingBytes[j];
         }
 
-        public static T[] Slice<T>(this T[] src, int offset, int length)
-        {
-            var data = new T[length];
-            Array.Copy(src, offset, data, 0, data.Length);
-            return data;
-        }
-
-        public static T[] SliceEnd<T>(this T[] src, int offset)
-        {
-            int length = src.Length - offset;
-            var data = new T[length];
-            Array.Copy(src, offset, data, 0, data.Length);
-            return data;
-        }
-
-        public static bool WithinRange(int value, int min, int max) => min <= value && value < max;
-
-        public static T[][] Split<T>(this T[] data, int size)
-        {
-            var result = new T[data.Length / size][];
-            for (int i = 0; i < data.Length; i += size)
-                result[i / size] = data.Slice(i, size);
-            return result;
-        }
-
-        public static IEnumerable<T[]> EnumerateSplit<T>(T[] bin, int size, int start = 0)
-        {
-            for (int i = start; i < bin.Length; i += size)
-                yield return bin.Slice(i, size);
-        }
-
-        public static IEnumerable<T[]> EnumerateSplit<T>(T[] bin, int size, int start, int end)
-        {
-            if (end < 0)
-                end = bin.Length;
-            for (int i = start; i < end; i += size)
-                yield return bin.Slice(i, size);
-        }
-
-        public static bool[] GitBitFlagArray(byte[] data, int offset, int count)
-        {
-            bool[] result = new bool[count];
-            for (int i = 0; i < result.Length; i++)
-                result[i] = (data[offset + (i >> 3)] >> (i & 7) & 0x1) == 1;
-            return result;
-        }
-
-        public static void SetBitFlagArray(byte[] data, int offset, bool[] value)
-        {
-            for (int i = 0; i < value.Length; i++)
-            {
-                var ofs = offset + (i >> 3);
-                var mask = (1 << (i & 7));
-                if (value[i])
-                    data[ofs] |= (byte)mask;
-                else
-                    data[ofs] &= (byte)~mask;
-            }
-        }
-
-        public static byte[] SetBitFlagArray(bool[] value)
-        {
-            byte[] data = new byte[value.Length / 8];
-            SetBitFlagArray(data, 0, value);
-            return data;
-        }
-
-        /// <summary>
-        /// Copies a <see cref="T"/> list to the destination list, with an option to copy to a starting point.
-        /// </summary>
-        /// <param name="list">Source list to copy from</param>
-        /// <param name="dest">Destination list/array</param>
-        /// <param name="skip">Criteria for skipping a slot</param>
-        /// <param name="start">Starting point to copy to</param>
-        /// <returns>Count of <see cref="T"/> copied.</returns>
-        public static int CopyTo<T>(this IEnumerable<T> list, IList<T> dest, Func<T, bool> skip, int start = 0)
-        {
-            int ctr = start;
-            int skipped = 0;
-            foreach (var z in list)
-            {
-                // seek forward to next open slot
-                int next = FindNextValidIndex(dest, skip, ctr);
-                if (next == -1)
-                    break;
-                skipped += next - ctr;
-                ctr = next;
-                dest[ctr++] = z;
-            }
-            return ctr - start - skipped;
-        }
-
-        public static int FindNextValidIndex<T>(IList<T> dest, Func<T, bool> skip, int ctr)
-        {
-            while (true)
-            {
-                if ((uint)ctr >= dest.Count)
-                    return -1;
-                var exist = dest[ctr];
-                if (exist == null || !skip(exist))
-                    return ctr;
-                ctr++;
-            }
-        }
-
-        /// <summary>
-        /// Copies an <see cref="IEnumerable{T}"/> list to the destination list, with an option to copy to a starting point.
-        /// </summary>
-        /// <typeparam name="T">Typed object to copy</typeparam>
-        /// <param name="list">Source list to copy from</param>
-        /// <param name="dest">Destination list/array</param>
-        /// <param name="start">Starting point to copy to</param>
-        /// <returns>Count of <see cref="T"/> copied.</returns>
-        public static int CopyTo<T>(this IEnumerable<T> list, IList<T> dest, int start = 0)
-        {
-            int ctr = start;
-            foreach (var z in list)
-            {
-                if ((uint)ctr >= dest.Count)
-                    break;
-                dest[ctr++] = z;
-            }
-            return ctr - start;
-        }
-
-        public static T[] ConcatAll<T>(params T[][] arr)
-        {
-            int len = 0;
-            foreach (var a in arr)
-                len += a.Length;
-
-            var result = new T[len];
-
-            int ctr = 0;
-            foreach (var a in arr)
-            {
-                a.CopyTo(result, ctr);
-                ctr += a.Length;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Finds a provided <see cref="pattern"/> within the supplied <see cref="array"/>.
-        /// </summary>
-        /// <param name="array">Array to look in</param>
-        /// <param name="pattern">Pattern to look for</param>
-        /// <param name="startIndex">Starting offset to look from</param>
-        /// <param name="length">Amount of entries to look through</param>
-        /// <returns>Index the pattern occurs at; if not found, returns -1.</returns>
-        public static int IndexOfBytes(byte[] array, byte[] pattern, int startIndex = 0, int length = -1)
-        {
-            int len = pattern.Length;
-            int endIndex = length > 0
-                ? startIndex + length
-                : array.Length - len - startIndex;
-
-            endIndex = Math.Min(array.Length - pattern.Length, endIndex);
-
-            int i = startIndex;
-            int j = 0;
-            while (true)
-            {
-                if (pattern[j] != array[i + j])
-                {
-                    if (++i == endIndex)
-                        return -1;
-                    j = 0;
-                }
-                else if (++j == len)
-                {
-                    return i;
-                }
-            }
-        }
-
-        public static int ReplaceOccurrences(this byte[] array, byte[] pattern, byte[] swap)
-        {
-            int count = 0;
-            while (true)
-            {
-                int ofs = IndexOfBytes(array, pattern);
-                if (ofs == -1)
-                    return count;
-                swap.CopyTo(array, ofs);
-                ++count;
-            }
-        }
+        return paddedArray;
     }
 }

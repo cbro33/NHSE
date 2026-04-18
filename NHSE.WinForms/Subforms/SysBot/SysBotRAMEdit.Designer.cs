@@ -139,7 +139,7 @@
             this.RamOffset.Name = "RamOffset";
             this.RamOffset.Size = new System.Drawing.Size(63, 20);
             this.RamOffset.TabIndex = 20;
-            this.RamOffset.Text = "AD3C7FD8";
+            this.RamOffset.Text = "B27BB758";
             // 
             // L_Offset
             // 
@@ -163,7 +163,7 @@
             // SysBotRAMEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.ClientSize = new System.Drawing.Size(234, 140);
             this.Controls.Add(this.GB_Inject);
             this.Controls.Add(this.B_Connect);
@@ -176,7 +176,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SysBotRAMEdit";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SysBotUI";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SysBotRAMEdit_FormClosing);
             this.GB_Inject.ResumeLayout(false);

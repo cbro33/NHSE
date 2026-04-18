@@ -4,247 +4,177 @@ using System.Windows.Forms;
 using NHSE.Core;
 using NHSE.Injection;
 using NHSE.Sprites;
-using NHSE.WinForms.Properties;
 
-namespace NHSE.WinForms
+namespace NHSE.WinForms;
+
+/// <summary>
+/// Simple launcher for opening a save file.
+/// </summary>
+public partial class Main : Form
 {
-    /// <summary>
-    /// Simple launcher for opening a save file.
-    /// </summary>
-    public partial class Main : Form
+    public Main()
     {
-        public const string BackupFolderName = "bak";
-        public const string ItemFolderName = "items";
-        public static readonly string WorkingDirectory = Application.StartupPath;
-        public static readonly string BackupPath = Path.Combine(WorkingDirectory, BackupFolderName);
-        public static readonly string ItemPath = Path.Combine(WorkingDirectory, ItemFolderName);
+        InitializeComponent();
+        UpdateRecentButton();
 
-        public Main()
+        // Flash to front
+        BringToFront();
+        WindowState = FormWindowState.Minimized;
+        Show();
+        WindowState = FormWindowState.Normal;
+
+        var args = Environment.GetCommandLineArgs().AsSpan(1); // skip exe path
+        foreach (var arg in args)
         {
-            InitializeComponent();
-            UpdateRecentButton();
-
-            // Flash to front
-            BringToFront();
-            WindowState = FormWindowState.Minimized;
-            Show();
-            WindowState = FormWindowState.Normal;
-
-            var args = Environment.GetCommandLineArgs();
-            for (int i = 1; i < args.Length; i++)
-                Open(args[i]);
-
-            UpdateRecentButton();
+            if (Directory.Exists(arg) || File.Exists(arg))
+                TryOpenSaveFile(arg);
         }
 
-        private static void Open(HorizonSave file)
-        {
-            bool sized = file.ValidateSizes();
-            if (!sized)
-            {
-                var prompt = WinFormsUtil.Prompt(MessageBoxButtons.YesNo, MessageStrings.MsgSaveDataSizeMismatch, MessageStrings.MsgAskContinue);
-                if (prompt != DialogResult.Yes)
-                    return;
-            }
+        UpdateRecentButton();
+    }
 
-            new Editor(file).Show();
-        }
+    protected override void OnFormClosing(FormClosingEventArgs e)
+    {
+        Program.SaveSettings();
+        base.OnFormClosing(e);
+    }
 
-        private void Main_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.AllowedEffect == (DragDropEffects.Copy | DragDropEffects.Link)) // external file
-                e.Effect = DragDropEffects.Copy;
-            else if (e.Data != null) // within
-                e.Effect = DragDropEffects.Move;
-        }
-
-        private void Main_DragDrop(object sender, DragEventArgs e)
-        {
-            var files = (string[]?)e.Data?.GetData(DataFormats.FileDrop);
-            if (files == null || files.Length == 0)
-                return;
-            Open(files[0]);
+    private void Main_DragEnter(object sender, DragEventArgs e)
+    {
+        if (e.AllowedEffect == (DragDropEffects.Copy | DragDropEffects.Link)) // external file
             e.Effect = DragDropEffects.Copy;
-            UpdateRecentButton();
-        }
+        else if (e.Data != null) // within
+            e.Effect = DragDropEffects.Move;
+    }
 
-        private void Menu_Open(object sender, EventArgs e)
+    private void Main_DragDrop(object sender, DragEventArgs e)
+    {
+        var files = (string[]?)e.Data?.GetData(DataFormats.FileDrop);
+        if (files is not { Length: not 0 })
+            return;
+        TryOpenSaveFile(files[0]);
+        e.Effect = DragDropEffects.Copy;
+        UpdateRecentButton();
+    }
+
+    private void Menu_Open(object sender, EventArgs e)
+    {
+        if ((ModifierKeys & Keys.Control) != 0)
         {
-            if ((ModifierKeys & Keys.Control) != 0)
-            {
-                // Detect save file from SD cards?
-            }
-            else if ((ModifierKeys & Keys.Shift) != 0)
-            {
-                var path = Settings.Default.LastFilePath;
-                if (Directory.Exists(path))
-                {
-                    Open(path);
-                    UpdateRecentButton();
-                    return;
-                }
-            }
-
-            using var ofd = new OpenFileDialog
-            {
-                Title = "Open main.dat ...",
-                Filter = "New Horizons Save File (main.dat)|main.dat",
-                FileName = "main.dat",
-            };
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                Open(ofd.FileName);
-                UpdateRecentButton();
-            }
+            // Detect save file from SD cards?
         }
-
-        private void Menu_OpenRecent(object? sender, EventArgs e)
+        else if ((ModifierKeys & Keys.Shift) != 0)
         {
-            var path = Settings.Default.LastFilePath;
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                WinFormsUtil.Error("No recent save folder recorded yet.");
-                UpdateRecentButton();
-                return;
-            }
-
-            if (!Directory.Exists(path))
-            {
-                WinFormsUtil.Error("The most recent save folder could not be found.", path);
-                UpdateRecentButton();
-                return;
-            }
-
-            Open(path);
-            UpdateRecentButton();
-        }
-
-        private static void Open(string path)
-        {
-            #if !DEBUG
-            try
-            #endif
-            {
-                OpenFileOrPath(path);
-            }
-            #if !DEBUG
-            catch (Exception ex)
-            {
-                WinFormsUtil.Error(ex.Message);
-            }
-            #endif
-        }
-
-        private static void OpenFileOrPath(string path)
-        {
+            var path = Program.Settings.LastFilePath;
             if (Directory.Exists(path))
             {
-                OpenSaveFile(path);
+                TryOpenSaveFile(path);
+                UpdateRecentButton();
                 return;
             }
-
-            var dir = Path.GetDirectoryName(path);
-            if (dir is null || !Directory.Exists(dir)) // ya never know
-            {
-                WinFormsUtil.Error(MessageStrings.MsgSaveDataImportFail, MessageStrings.MsgSaveDataImportSuggest);
-                return;
-            }
-
-            OpenSaveFile(dir);
         }
 
-        private void UpdateRecentButton()
+        using var ofd = new OpenFileDialog();
+        ofd.Title = "Open main.dat ...";
+        ofd.Filter = "New Horizons Save File (main.dat)|main.dat";
+        ofd.FileName = "main.dat";
+        if (ofd.ShowDialog() == DialogResult.OK)
         {
-            var path = Settings.Default.LastFilePath;
-            if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
-            {
-                B_OpenRecent.Visible = false;
-                toolTipRecent.SetToolTip(B_OpenRecent, string.Empty);
-                return;
-            }
+            TryOpenSaveFile(ofd.FileName);
+            UpdateRecentButton();
+        }
+    }
 
-            var trimmed = path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            var name = Path.GetFileName(trimmed);
-            if (string.IsNullOrEmpty(name))
-                name = trimmed;
-
-            B_OpenRecent.Text = $"Open most recent folder ({name})";
-            toolTipRecent.SetToolTip(B_OpenRecent, path);
-            B_OpenRecent.Visible = true;
+    private void Menu_OpenRecent(object? sender, EventArgs e)
+    {
+        var path = Program.Settings.LastFilePath;
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            WinFormsUtil.Error("No recent save folder recorded yet.");
+            UpdateRecentButton();
+            return;
         }
 
-        private static void OpenSaveFile(string path)
+        if (!Directory.Exists(path))
         {
-            var file = new HorizonSave(path);
-            Open(file);
-
-            var settings = Settings.Default;
-            settings.LastFilePath = path;
-
-            if (!settings.BackupPrompted)
-            {
-                settings.BackupPrompted = true;
-                var line1 = string.Format(MessageStrings.MsgBackupCreateLocation, BackupFolderName);
-                var line2 = MessageStrings.MsgBackupCreateQuestion;
-                var prompt = WinFormsUtil.Prompt(MessageBoxButtons.YesNo, line1, line2);
-                settings.AutomaticBackup = prompt == DialogResult.Yes;
-            }
-
-            if (settings.AutomaticBackup)
-                BackupSaveFile(file, path, BackupPath);
-
-            settings.Save();
+            WinFormsUtil.Error("The most recent save folder could not be found.", path);
+            UpdateRecentButton();
+            return;
         }
 
-        private static void BackupSaveFile(HorizonSave file, string path, string bak)
+        TryOpenSaveFile(path);
+        UpdateRecentButton();
+    }
+
+    private void UpdateRecentButton()
+    {
+        var path = Program.Settings.LastFilePath;
+        if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
         {
-            Directory.CreateDirectory(bak);
-            var dest = Path.Combine(bak, file.GetBackupFolderTitle());
-            if (!Directory.Exists(dest))
-                FileUtil.CopyFolder(path, dest);
+            B_OpenRecent.Visible = false;
+            toolTipRecent.SetToolTip(B_OpenRecent, string.Empty);
+            return;
         }
 
-        private void Main_KeyDown(object sender, KeyEventArgs e)
+        var trimmed = path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var name = Path.GetFileName(trimmed);
+        if (string.IsNullOrEmpty(name))
+            name = trimmed;
+
+        B_OpenRecent.Text = $"Open most recent folder ({name})";
+        toolTipRecent.SetToolTip(B_OpenRecent, path);
+        B_OpenRecent.Visible = true;
+    }
+
+    private void Main_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (ModifierKeys != Keys.Control)
         {
-            if (ModifierKeys != Keys.Control)
-            {
 #if DEBUG
-                if (ModifierKeys == (Keys.Control | Keys.Alt) && e.KeyCode == Keys.D)
-                    DevUtil.UpdateAll();
+            if (ModifierKeys == (Keys.Control | Keys.Alt) && e.KeyCode == Keys.D)
+                DevUtil.UpdateAll();
 #endif
-                return;
-            }
+            return;
+        }
 
-            switch (e.KeyCode)
+        switch (e.KeyCode)
+        {
+            case Keys.O:
             {
-                case Keys.O:
-                {
-                    Menu_Open(sender, e);
-                    break;
-                }
-                case Keys.I:
-                {
-                    ItemSprite.Initialize(GameInfo.GetStrings("en").itemlist);
-                    var items = new Item[40];
-                    for (int i = 0; i < items.Length; i++)
-                        items[i] = new Item(Item.NONE);
-                    using var editor = new PlayerItemEditor(items, 10, 4, true);
-                    editor.ShowDialog();
-                    break;
-                }
-                case Keys.H:
-                {
-                    using var editor = new SysBotRAMEdit(InjectionType.Generic);
-                    editor.ShowDialog();
-                    break;
-                }
-                case Keys.P:
-                {
-                    using var editor = new SettingsEditor();
-                    editor.ShowDialog();
-                    break;
-                }
+                Menu_Open(sender, e);
+                break;
+            }
+            case Keys.I:
+            {
+                ItemSprite.Initialize(GameInfo.GetStrings("en").itemlist);
+                var items = new Item[40];
+                for (int i = 0; i < items.Length; i++)
+                    items[i] = new Item(Item.NONE);
+                using var editor = new PlayerItemEditor(items, 10, 4, true);
+                editor.ShowDialog();
+                break;
+            }
+            case Keys.H:
+            {
+                using var editor = new SysBotRAMEdit(InjectionType.Generic);
+                editor.ShowDialog();
+                break;
+            }
+            case Keys.P:
+            {
+                using var editor = new SettingsEditor();
+                editor.ShowDialog();
+                break;
             }
         }
+    }
+
+    private bool TryOpenSaveFile(string path)
+    {
+        if (!SaveFileLoader.TryGetSaveFile(path, out var sav))
+            return false;
+        var editor = new Editor(sav);
+        editor.Show(this);
+        return true;
     }
 }

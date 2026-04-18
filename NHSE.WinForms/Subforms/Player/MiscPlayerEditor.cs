@@ -1,61 +1,72 @@
-﻿using System;
+﻿using NHSE.Core;
+using System;
+using System.Diagnostics;
+using System.Text;
 using System.Windows.Forms;
-using NHSE.Core;
 
-namespace NHSE.WinForms
+namespace NHSE.WinForms;
+
+public partial class MiscPlayerEditor : Form
 {
-    public partial class MiscPlayerEditor : Form
+    private readonly Player Player;
+    private readonly MainSave Save;
+
+    public MiscPlayerEditor(Player p, MainSave s)
     {
-        private readonly Player Player;
+        InitializeComponent();
+        this.TranslateInterface(GameInfo.CurrentLanguage);
+        Player = p;
+        Save = s;
 
-        public MiscPlayerEditor(Player p)
-        {
-            InitializeComponent();
-            this.TranslateInterface(GameInfo.CurrentLanguage);
-            Player = p;
+        var profileFruit = ComboItemUtil.GetArray(GameLists.Fruits, GameInfo.Strings.itemlistdisplay);
+        RIS_ProfileFruit.Initialize(profileFruit);
 
-            var fruits = ComboItemUtil.GetArray(GameLists.Fruits, GameInfo.Strings.itemlistdisplay);
-            ProfileFruit.Initialize(fruits);
+        LoadPlayer();
+    }
 
-            LoadPlayer();
-        }
+    private void LoadPlayer()
+    {
+        var p = Player;
+        var pers = p.Personal;
 
-        private void LoadPlayer()
-        {
-            var p = Player;
-            var pers = p.Personal;
+        var sav = Save;
 
-            var bd = pers.Birthday;
-            NUD_BirthDay.Value = bd.Day;
-            NUD_BirthMonth.Value = bd.Month;
+        var bd = pers.Birthday;
+        NUD_BirthDay.Value = bd.Day;
+        NUD_BirthMonth.Value = bd.Month;
 
-            CHK_ProfileMadeVillage.Checked = pers.ProfileIsMakeVillage;
-            ProfileFruit.Value = pers.ProfileFruit;
-            CAL_ProfileTimestamp.Value = pers.ProfileTimestamp;
-        }
+        CHK_ProfileMadeVillage.Checked = pers.ProfileIsMakeVillage;
 
-        private void B_Cancel_Click(object sender, EventArgs e) => Close();
+        RIS_ProfileFruit.Value = pers.ProfileFruit;
 
-        private void B_Save_Click(object sender, EventArgs e)
-        {
-            SavePlayer();
-            Close();
-        }
+        CAL_ProfileTimestamp.Value = pers.ProfileTimestamp;
+    }
 
-        private void SavePlayer()
-        {
-            var p = Player;
-            var pers = p.Personal;
+    private void B_Cancel_Click(object sender, EventArgs e) => Close();
 
-            var bd = pers.Birthday;
-            bd.Day = (byte) NUD_BirthDay.Value;
-            bd.Month = (byte) NUD_BirthMonth.Value;
+    private void B_Save_Click(object sender, EventArgs e)
+    {
+        SavePlayer();
+        Close();
+    }
 
-            pers.Birthday = bd;
-            pers.ProfileBirthday = bd;
-            pers.ProfileIsMakeVillage = CHK_ProfileMadeVillage.Checked;
-            pers.ProfileFruit = ProfileFruit.Value;
-            pers.ProfileTimestamp = CAL_ProfileTimestamp.Value;
-        }
+    private void SavePlayer()
+    {
+        var p = Player;
+        var pers = p.Personal;
+
+        var sav = Save;
+
+        var bd = pers.Birthday;
+        bd.Day = (byte) NUD_BirthDay.Value;
+        bd.Month = (byte) NUD_BirthMonth.Value;
+
+        pers.Birthday = bd;
+        pers.ProfileBirthday = bd;
+        pers.ProfileIsMakeVillage = CHK_ProfileMadeVillage.Checked;
+
+        pers.ProfileFruit = RIS_ProfileFruit.Value;
+
+        pers.ProfileTimestamp = CAL_ProfileTimestamp.Value;
     }
 }

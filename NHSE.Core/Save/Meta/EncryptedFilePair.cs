@@ -1,91 +1,90 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using static System.Buffers.Binary.BinaryPrimitives;
 
-namespace NHSE.Core
+namespace NHSE.Core;
+
+/// <summary>
+/// Represents two files -- <see cref="NameData"/> and <see cref="NameHeader"/> and their decrypted data.
+/// </summary>
+public abstract class EncryptedFilePair
 {
+    private readonly byte[] RawData;
+    private readonly byte[] RawHeader;
+    private readonly ISaveFileProvider Provider;
+
+    protected Memory<byte> Raw => RawData;
+    public Span<byte> Data => RawData;
+    public Span<byte> Header => RawHeader;
+
+    public readonly FileHeaderInfo Info;
+
+    public readonly string NameData;
+    public readonly string NameHeader;
+
     /// <summary>
-    /// Represents two files -- <see cref="DataPath"/> and <see cref="HeaderPath"/> and their decrypted data.
+    /// Checks if the file pair exists in the specified provider.
     /// </summary>
-    public abstract class EncryptedFilePair
+    public static bool Exists(ISaveFileProvider provider, string name)
     {
-        public readonly byte[] Data;
-        public readonly byte[] Header;
-
-        public readonly FileHeaderInfo Info;
-
-        public readonly string DataPath;
-        public readonly string HeaderPath;
-        public readonly string NameData;
-        public readonly string NameHeader;
-
-        public static bool Exists(string folder, string name)
-        {
-            var NameData = $"{name}.dat";
-            var NameHeader = $"{name}Header.dat";
-            var hdr = Path.Combine(folder, NameHeader);
-            var dat = Path.Combine(folder, NameData);
-            return File.Exists(hdr) && File.Exists(dat);
-        }
-
-        protected EncryptedFilePair(string folder, string name)
-        {
-            NameData = $"{name}.dat";
-            NameHeader = $"{name}Header.dat";
-            var hdr = Path.Combine(folder, NameHeader);
-            var dat = Path.Combine(folder, NameData);
-
-            var hd = File.ReadAllBytes(hdr);
-            var md = File.ReadAllBytes(dat);
-
-            Encryption.Decrypt(hd, md);
-
-            Header = hd;
-            Data = md;
-            DataPath = dat;
-            HeaderPath = hdr;
-
-            Info = Header.Slice(0, FileHeaderInfo.SIZE).ToClass<FileHeaderInfo>();
-        }
-
-        public void Save(uint seed)
-        {
-            var encrypt = Encryption.Encrypt(Data, seed, Header);
-            File.WriteAllBytes(DataPath, encrypt.Data);
-            File.WriteAllBytes(HeaderPath, encrypt.Header);
-        }
-
-        /// <summary>
-        /// Updates all hashes of <see cref="Data"/>.
-        /// </summary>
-        public void Hash()
-        {
-            var ver = Info.GetKnownRevisionIndex();
-            var hash = RevisionChecker.HashInfo[ver];
-            var details = hash.GetFile(NameData);
-            if (details == null)
-                throw new ArgumentNullException(nameof(NameData));
-            foreach (var h in details.HashRegions)
-                Murmur3.UpdateMurmur32(Data, h.HashOffset, h.BeginOffset, (uint)h.Size);
-        }
-
-        public IEnumerable<FileHashRegion> InvalidHashes()
-        {
-            var ver = Info.GetKnownRevisionIndex();
-            var hash = RevisionChecker.HashInfo[ver];
-            var details = hash.GetFile(NameData);
-            if (details == null)
-                throw new ArgumentNullException(nameof(NameData));
-            foreach (var h in details.HashRegions)
-            {
-                var current = Murmur3.GetMurmur3Hash(Data, h.BeginOffset, (uint)h.Size);
-                var saved = BitConverter.ToUInt32(Data, h.HashOffset);
-                if (current != saved)
-                    yield return h;
-            }
-        }
-
-        protected string GetString(int offset, int maxLength) => StringUtil.GetString(Data, offset, maxLength);
-        protected static byte[] GetBytes(string value, int maxLength) => StringUtil.GetBytes(value, maxLength);
+        var nameData = $"{name}.dat";
+        var nameHeader = $"{name}Header.dat";
+        return provider.FileExists(nameHeader) && provider.FileExists(nameData);
     }
+
+    protected EncryptedFilePair(ISaveFileProvider provider, string name)
+    {
+        Provider = provider;
+        NameData = $"{name}.dat";
+        NameHeader = $"{name}Header.dat";
+
+        var hd = provider.ReadFile(NameHeader);
+        var md = provider.ReadFile(NameData);
+
+        Encryption.Decrypt(hd, md);
+
+        RawHeader = hd;
+        RawData = md;
+
+        Info = Header[..FileHeaderInfo.SIZE].ToArray().ToClass<FileHeaderInfo>();
+    }
+
+    public void Save(uint seed)
+    {
+        var encrypt = Encryption.Encrypt(Data, seed, Header);
+        Provider.WriteFile(NameData, encrypt.Data.Span);
+        Provider.WriteFile(NameHeader, encrypt.Header.Span);
+    }
+
+
+    /// <summary>
+    /// Updates all hashes of <see cref="Data"/>.
+    /// </summary>
+    public void Hash()
+    {
+        var ver = Info.GetKnownRevisionIndex();
+        var hash = RevisionChecker.HashInfo[ver];
+        var details = hash.GetFile(NameData);
+        ArgumentNullException.ThrowIfNull(details, nameof(NameData));
+        foreach (var h in details.HashRegions)
+            WriteUInt32LittleEndian(Data[h.HashOffset..], Murmur3.Hash(Data[h.HashedRange]));
+    }
+
+    public IEnumerable<FileHashRegion> InvalidHashes()
+    {
+        var ver = Info.GetKnownRevisionIndex();
+        var hash = RevisionChecker.HashInfo[ver];
+        var details = hash.GetFile(NameData);
+        ArgumentNullException.ThrowIfNull(details, nameof(NameData));
+        foreach (var h in details.HashRegions)
+        {
+            var current = Murmur3.Hash(Data[h.HashedRange]);
+            var saved = ReadUInt32LittleEndian(Data[h.HashOffset..]);
+            if (current != saved)
+                yield return h;
+        }
+    }
+
+    protected string GetString(int offset, int maxLength) => StringUtil.GetString(Data, offset, maxLength);
+    protected static byte[] GetBytes(string value, int maxLength) => StringUtil.GetBytes(value, maxLength);
 }

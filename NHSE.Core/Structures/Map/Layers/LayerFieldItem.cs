@@ -1,0 +1,103 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace NHSE.Core;
+
+public sealed record LayerFieldItem(Item[] Tiles, byte AcreWidth, byte AcreHeight)
+    : LayerItem(Tiles, GetViewport(AcreWidth, AcreHeight))
+{
+    private static TileGridViewport GetViewport(byte width, byte height) => new(TilesPerAcreDim, TilesPerAcreDim, width, height);
+
+    public const int TilesPerAcreDim = 32;
+
+    public int ClearFieldPlanted(Func<FieldItemKind, bool> criteria) => ClearFieldPlanted(0, 0, TileInfo.TotalWidth, TileInfo.TotalHeight, criteria);
+    public int RemoveAll(Func<Item, bool> criteria) => RemoveAll(0, 0, TileInfo.TotalWidth, TileInfo.TotalHeight, criteria);
+    public int RemoveAll(HashSet<ushort> items) => RemoveAll(0, 0, TileInfo.TotalWidth, TileInfo.TotalHeight, z => items.Contains(z.DisplayItemId));
+    public int RemoveAll(ushort item) => RemoveAll(0, 0, TileInfo.TotalWidth, TileInfo.TotalHeight, z => z.DisplayItemId == item);
+
+    public int ClearFieldPlanted(int xmin, int ymin, int width, int height, Func<FieldItemKind, bool> criteria)
+    {
+        int count = 0;
+        var fi = FieldItemList.Items;
+
+        for (int x = xmin; x < xmin + width; x++)
+        {
+            for (int y = ymin; y < ymin + height; y++)
+            {
+                if (!Contains(x, y))
+                    continue;
+
+                var t = GetTile(x, y);
+                var disp = t.DisplayItemId;
+                if (!fi.TryGetValue(disp, out var val))
+                    continue;
+
+                if (!criteria(val.Kind))
+                    continue;
+                t.Delete();
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int ModifyAll(int xmin, int ymin, int width, int height, Func<Item, bool> criteria, Action<Item> action)
+    {
+        int count = 0;
+        for (int x = xmin; x < xmin + width; x++)
+        {
+            for (int y = ymin; y < ymin + height; y++)
+            {
+                if (!Contains(x, y))
+                    continue;
+                var t = GetTile(x, y);
+                if (!criteria(t))
+                    continue;
+                action(t);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int RemoveAllHoles(int xmin, int ymin, int width, int height) => ClearFieldPlanted(xmin, ymin, width, height, z => z == FieldItemKind.UnitIconHole);
+    public int RemoveAllWeeds(int xmin, int ymin, int width, int height) => ClearFieldPlanted(xmin, ymin, width, height, z => z.IsWeed);
+    public int RemoveAllTrees(int xmin, int ymin, int width, int height) => ClearFieldPlanted(xmin, ymin, width, height, z => z.IsTree);
+    public int RemoveAllPlants(int xmin, int ymin, int width, int height) => ClearFieldPlanted(xmin, ymin, width, height, z => z.IsPlant);
+    public int RemoveAllFences(int xmin, int ymin, int width, int height) => ClearFieldPlanted(xmin, ymin, width, height, z => z.IsFence);
+    public int RemoveAllFlowers(int xmin, int ymin, int width, int height) => ClearFieldPlanted(xmin, ymin, width, height, z => z.IsFlower);
+    public int RemoveAllBushes(int xmin, int ymin, int width, int height) => ClearFieldPlanted(xmin, ymin, width, height, z => z.IsBush);
+    public int RemoveAllObjects(int xmin, int ymin, int width, int height) => ClearFieldPlanted(xmin, ymin, width, height, _ => true);
+
+    public int RemoveAll(int xmin, int ymin, int width, int height) => RemoveAll(xmin, ymin, width, height, _ => true);
+    public int RemoveAllShells(int xmin, int ymin, int width, int height) => RemoveAll(xmin, ymin, width, height, z => GameLists.Shells.Contains(z.DisplayItemId));
+    public int RemoveAllBranches(int xmin, int ymin, int width, int height) => RemoveAll(xmin, ymin, width, height, z => z.DisplayItemId == 2500);
+    public int RemoveAllPlacedItems(int xmin, int ymin, int width, int height) => RemoveAll(xmin, ymin, width, height, z => !z.IsNone && !FieldItemList.Items.ContainsKey(z.DisplayItemId));
+    public int RemoveAllLike(int xmin, int ymin, int width, int height, Item item) => RemoveAll(xmin, ymin, width, height, z => !z.IsNone && item.DisplayItemId == z.DisplayItemId);
+
+    public int WaterAllFlowers(int xmin, int ymin, int width, int height, bool all)
+    {
+        var fi = FieldItemList.Items;
+
+        bool IsFlowerWaterable(Item item)
+        {
+            if (item.IsNone)
+                return false;
+            if (!item.IsRoot)
+                return false;
+            if (!fi.TryGetValue(item.ItemId, out var def))
+                return false;
+            if (!def.Kind.IsFlower)
+                return false;
+            return true;
+        }
+
+        return ModifyAll(xmin, ymin, width, height, IsFlowerWaterable, z => z.Water(all));
+    }
+
+    public Item this[int relX, int relY]
+    {
+        get => GetTile(relX, relY);
+        set => SetTile(relX, relY, value);
+    }
+}
